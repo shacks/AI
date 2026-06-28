@@ -8,32 +8,26 @@
 <style>
   :root{
     --bg:#f6f6ef; --paper:#ffffff; --bar:#ff6600; --ink:#1a1a1a; --meta:#828282;
-    --line:#e2e2da; --accent:#ff6600; --link:#1a1a1a; --good:#2a8a4a; --bad:#b33; --blue:#3b6ea5;
-    --sans:Verdana,Geneva,'Segoe UI',sans-serif;
-    --mono:ui-monospace,Menlo,Consolas,monospace;
+    --line:#e2e2da; --rule:#ececE4; --accent:#ff6600; --good:#2a8a4a; --bad:#b33; --blue:#3b6ea5;
+    --sans:Verdana,Geneva,'Segoe UI',sans-serif; --mono:ui-monospace,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;line-height:1.5}
-  a{color:var(--link);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .wrap{max-width:1024px;margin:0 auto;padding:0 14px}
+  a{color:var(--ink);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 14px}
   .note{font-family:var(--mono);font-size:10px;color:#b0b0a6;text-align:center;padding:3px;letter-spacing:1px}
 
-  /* login */
   #login{min-height:78vh;display:flex;align-items:center;justify-content:center}
   .card{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:28px;max-width:380px;width:100%}
   .card .logo{background:var(--bar);color:#fff;font-weight:bold;padding:3px 7px;display:inline-block;border-radius:2px}
   h1{font-size:20px;margin:14px 0 2px}
   .card .tag{color:var(--meta);font-size:12px}
-  input[type=email],input[type=text]{width:100%;background:var(--paper);border:1px solid #cfcfc6;color:var(--ink);
-    padding:9px 10px;border-radius:3px;margin-top:14px;font-family:var(--sans);font-size:13px}
+  input[type=email],input[type=text]{width:100%;background:var(--paper);border:1px solid #cfcfc6;color:var(--ink);padding:9px 10px;border-radius:3px;margin-top:14px;font-family:var(--sans);font-size:13px}
   button{cursor:pointer;background:var(--bar);color:#fff;border:none;font-weight:bold;padding:9px 16px;border-radius:3px;margin-top:12px;font-family:var(--sans);font-size:13px}
   button.ghost{background:#efefe8;color:#444;border:1px solid #d8d8cf;font-weight:normal;padding:5px 10px;margin:0}
   button:hover{filter:brightness(.96)}
-  .msg{margin-top:12px;font-size:12px;color:var(--meta)}
-  .msg.err{color:var(--bad)}
+  .msg{margin-top:12px;font-size:12px;color:var(--meta)} .msg.err{color:var(--bad)}
 
-  /* app */
   #app{display:none}
   .bar{background:var(--bar);color:#fff}
   .bar .wrap{display:flex;align-items:center;gap:14px;padding:5px 14px;flex-wrap:wrap}
@@ -44,57 +38,51 @@
   .bar .right{margin-left:auto;display:flex;align-items:center;gap:10px}
   .bar .right .who{color:#ffe0c2;font-size:11px;font-family:var(--mono)}
 
-  .view{display:none;padding:16px 0 60px}
-  .view.active{display:block}
+  .view{display:none;padding:16px 0 60px} .view.active{display:block}
   .sect{font-size:12px;font-weight:bold;color:#444;text-transform:uppercase;letter-spacing:1px;margin:22px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
   .sect:first-child{margin-top:4px}
-
   .kpis{display:flex;gap:18px;flex-wrap:wrap;padding:8px 0;color:var(--meta);font-size:12px}
   .kpis b{color:var(--ink);font-size:15px}
 
-  .controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
   .controls select,.controls input{background:var(--paper);border:1px solid #cfcfc6;color:var(--ink);padding:6px 8px;border-radius:3px;font-family:var(--sans);font-size:12px}
-  .controls input{width:240px}
+  .controls input.search{width:230px}
+  .controls .count{color:var(--meta);font-size:11px;margin-left:auto}
+  .lbl{font-size:11px;color:var(--meta);text-transform:uppercase;letter-spacing:.5px}
 
-  /* HN-style ranked list */
-  .item{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #ececE4;align-items:baseline}
-  .item .rank{color:var(--meta);font-size:13px;min-width:22px;text-align:right}
-  .item .body{flex:1}
-  .item .title{font-size:14px}
-  .item .title a{color:var(--link)}
-  .item .dom{color:var(--meta);font-size:11px}
-  .item .sub{color:var(--meta);font-size:11px;margin-top:2px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-  .item .why{color:#3a3a3a;font-size:12px;margin-top:4px}
-  .item .detail{color:var(--meta);font-size:11.5px;margin-top:2px}
-  .item.unrev .rank{color:var(--accent)}
-  .score{font-weight:bold}
-  .score.s5{color:var(--accent)} .score.s4{color:#c8740a} .score.s3{color:var(--blue)} .score.s2,.score.s1{color:var(--meta)}
-  .ty{font-family:var(--mono);font-size:10px;color:#666;background:#ececE4;padding:1px 5px;border-radius:2px}
-  .ty.gov-deal,.ty.policy{color:#a33;background:#f6e8e8}
-  .ty.product{color:#2a7a45;background:#e6f1e9}
-  .ty.funding{color:#9a6a10;background:#f4ecda}
-  .ty.conference{color:#36607f;background:#e6eef4}
-  .staged{color:var(--accent);font-family:var(--mono);font-size:10px;border:1px solid #ffd2a8;padding:0 4px;border-radius:2px}
-  .chk{font-size:11px;color:var(--meta);cursor:pointer;user-select:none}
-  .chk input{vertical-align:middle;accent-color:var(--accent)}
+  /* TABLE */
+  table.tbl{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+  .tbl th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#555;text-align:left;padding:8px 10px;border-bottom:2px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none;background:#fafaf4}
+  .tbl th:hover{color:var(--accent)}
+  .tbl th .arr{color:var(--accent);font-size:10px}
+  .tbl td{padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+  .tbl tr.r{cursor:pointer} .tbl tr.r:hover td{background:#fcfbf3}
+  .tbl tr.unrev td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+  .tbl td.c-date,.tbl td.c-rel{white-space:nowrap;font-family:var(--mono);font-size:11.5px;color:#555}
+  .tbl td.c-co{font-size:12px;color:#333;max-width:150px}
+  .tbl td.c-title{font-size:13px}
+  .tbl td.c-title a{color:var(--ink)} .dom{color:var(--meta);font-size:11px}
+  .detrow td{background:#fbfaf2;color:#444;font-size:12px}
+  .detrow .why{color:#222;margin-bottom:5px} .detrow .act{color:var(--accent);margin-top:5px}
+  .score{font-weight:bold} .score.s5{color:var(--accent)} .score.s4{color:#c8740a} .score.s3{color:var(--blue)} .score.s2,.score.s1{color:var(--meta)}
+  .ty{font-family:var(--mono);font-size:10px;color:#666;background:#ececE4;padding:1px 5px;border-radius:2px;white-space:nowrap}
+  .ty.gov-deal,.ty.policy{color:#a33;background:#f6e8e8} .ty.product{color:#2a7a45;background:#e6f1e9}
+  .ty.funding{color:#9a6a10;background:#f4ecda} .ty.conference{color:#36607f;background:#e6eef4}
+  .staged{color:var(--accent);font-family:var(--mono);font-size:9px;border:1px solid #ffd2a8;padding:0 3px;border-radius:2px}
+  .revBox{accent-color:var(--accent);cursor:pointer}
 
-  /* companies + contacts */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
   .box{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:13px}
   .box.core{border-left:3px solid var(--accent)}
-  .box h3{margin:0;font-size:15px}
-  .box .sub{color:var(--meta);font-size:11px;margin-top:2px}
+  .box h3{margin:0;font-size:15px} .box .sub{color:var(--meta);font-size:11px;margin-top:2px}
   .box .ratio{font-size:12.5px;margin:8px 0;color:#333}
   .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
   .tag{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:2px;background:#ececE4;color:#555}
-  .tag.on{background:#e6f1e9;color:var(--good)} .tag.off{background:#f6e8e8;color:var(--bad)}
-  .tag.eng{background:var(--accent);color:#fff}
-  .links{display:flex;gap:11px;margin-top:9px;font-size:12px}
-  .links a{color:var(--blue)}
+  .tag.on{background:#e6f1e9;color:var(--good)} .tag.off{background:#f6e8e8;color:var(--bad)} .tag.eng{background:var(--accent);color:#fff}
+  .links{display:flex;gap:11px;margin-top:9px;font-size:12px} .links a{color:var(--blue)}
   .sov{color:var(--meta);font-size:11px;margin-top:7px}
   .ct .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
-  .ct .nm{font-weight:bold}
-  .ct .ti{color:var(--meta);font-size:11px}
+  .ct .nm{font-weight:bold} .ct .ti{color:var(--meta);font-size:11px}
   .ct .ang{font-size:12.5px;margin:7px 0;color:#333}
   .ct select{background:var(--paper);border:1px solid #cfcfc6;padding:4px 7px;border-radius:3px;font-size:12px;font-family:var(--sans)}
   .unver{color:var(--bad);font-family:var(--mono);font-size:10px}
@@ -104,21 +92,19 @@
 </style>
 </head>
 <body>
-<div class="note">UNCLASSIFIED // PERSONAL WORKING DB // NOT FOR DISTRIBUTION</div>
+<div class="note">UNCLASSIFIED // PERSONAL // NOT FOR DISTRIBUTION</div>
 
-<!-- LOGIN -->
 <div id="login">
   <div class="card">
     <span class="logo">AI</span>
     <h1>AI Landscape</h1>
-    <div class="tag">Vendor &amp; movements intelligence · JARVIS</div>
+    <div class="tag">Vendor &amp; movements intelligence</div>
     <input id="email" type="email" placeholder="your email" autocomplete="email" />
     <button id="sendBtn">Send me a login link</button>
     <div id="loginMsg" class="msg"></div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="bar"><div class="wrap">
     <span class="brand">AI Landscape</span>
@@ -129,8 +115,7 @@
       <a data-tab="contacts">who to meet</a>
     </div>
     <div class="right">
-      <span id="sweepInfo" class="who"></span>
-      <span id="whoami" class="who"></span>
+      <span id="sweepInfo" class="who"></span><span id="whoami" class="who"></span>
       <button id="refreshBtn" class="ghost">refresh</button>
       <button id="signout" class="ghost">sign out</button>
     </div>
@@ -141,131 +126,165 @@
 
     <div id="view-activities" class="view">
       <div class="controls">
-        <input id="actSearch" type="text" placeholder="search headline / company..." />
-        <select id="actType"><option value="">all types</option></select>
-        <select id="actReviewed">
-          <option value="">all</option><option value="false">needs review</option><option value="true">reviewed</option>
-        </select>
-        <select id="actSort"><option value="score">sort: relevance</option><option value="date">sort: date</option></select>
+        <input id="f-search" class="search" type="text" placeholder="search..." />
+        <select id="f-type"></select>
+        <select id="f-company"></select>
+        <select id="f-region"></select>
+        <select id="f-reviewed"><option value="">all</option><option value="false">needs review</option><option value="true">reviewed</option></select>
+        <select id="f-minrel"><option value="0">any rel</option><option value="5">rel 5</option><option value="4">rel ≥4</option><option value="3">rel ≥3</option></select>
+        <button id="f-clear" class="ghost">clear</button>
+        <span id="actCount" class="count"></span>
       </div>
-      <div id="actList"></div>
+      <table class="tbl"><thead><tr id="actHead"></tr></thead><tbody id="actBody"></tbody></table>
     </div>
 
-    <div id="view-companies" class="view"><div id="coGrid" class="grid"></div></div>
-    <div id="view-contacts" class="view"></div>
+    <div id="view-companies" class="view">
+      <div class="controls">
+        <input id="c-search" class="search" type="text" placeholder="search companies..." />
+        <select id="c-rel"><option value="">all</option><option value="core">core</option><option value="radar">radar</option></select>
+        <select id="c-fvey"><option value="">FVEY: all</option><option value="true">Five Eyes</option><option value="false">non-FVEY</option></select>
+        <select id="c-sort"><option value="relevance">sort: relevance</option><option value="name">sort: name</option><option value="status">sort: status</option></select>
+        <span id="coCount" class="count"></span>
+      </div>
+      <div id="coGrid" class="grid"></div>
+    </div>
+
+    <div id="view-contacts" class="view">
+      <div class="controls">
+        <input id="k-search" class="search" type="text" placeholder="search people..." />
+        <select id="k-company"></select>
+        <select id="k-status"><option value="">all status</option><option>to-reach</option><option>contacted</option><option>connected</option><option>passed</option></select>
+        <select id="k-sort"><option value="priority">sort: priority</option><option value="name">sort: name</option></select>
+        <span id="ctCount" class="count"></span>
+      </div>
+      <div id="ctGrid" class="grid"></div>
+    </div>
   </div>
 </div>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const SUPABASE_URL = 'https://gfnhzmtmjhvleyffpkfp.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_8wUYKf1D0roWMfLh9-GcXQ_79-Fkrm-';
-const OWNER = 'shashank.sunil@gmail.com';
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ detectSessionInUrl:true, persistSession:true } });
+const SUPABASE_URL='https://gfnhzmtmjhvleyffpkfp.supabase.co';
+const SUPABASE_KEY='sb_publishable_8wUYKf1D0roWMfLh9-GcXQ_79-Fkrm-';
+const OWNER='shashank.sunil@gmail.com';
+const sb=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
 
-const $ = s => document.querySelector(s);
-const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const domain = u => { try { return new URL(u).hostname.replace(/^www\./,''); } catch { return ''; } };
-let DATA = { companies:[], activities:[], contacts:[], sweep:null };
+const $=s=>document.querySelector(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const domain=u=>{try{return new URL(u).hostname.replace(/^www\./,'');}catch{return'';}};
+const opts=(sel,vals,label)=>{ sel.innerHTML=`<option value="">${label}</option>`+vals.map(v=>`<option>${esc(v)}</option>`).join(''); };
+let DATA={companies:[],activities:[],contacts:[],sweep:null};
+let actSort={col:'relevance_score',dir:-1};
+const expanded=new Set();
 
 async function init(){
-  const { data:{ session } } = await sb.auth.getSession();
-  if(session && session.user?.email?.toLowerCase()===OWNER) showApp(session);
+  const {data:{session}}=await sb.auth.getSession();
+  if(session&&session.user?.email?.toLowerCase()===OWNER) showApp(session);
   else { $('#login').style.display='flex'; $('#app').style.display='none'; }
 }
-sb.auth.onAuthStateChange((_e, session)=>{ if(session && session.user?.email?.toLowerCase()===OWNER) showApp(session); });
-$('#sendBtn').addEventListener('click', async ()=>{
-  const email=$('#email').value.trim(); const m=$('#loginMsg'); m.className='msg';
-  if(!email){ m.textContent='Enter your email.'; return; }
+sb.auth.onAuthStateChange((_e,session)=>{ if(session&&session.user?.email?.toLowerCase()===OWNER) showApp(session); });
+$('#sendBtn').addEventListener('click',async()=>{
+  const email=$('#email').value.trim(),m=$('#loginMsg'); m.className='msg';
+  if(!email){m.textContent='Enter your email.';return;}
   m.textContent='Sending...';
-  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.href.split('#')[0] } });
-  if(error){ m.className='msg err'; m.textContent=error.message; }
-  else m.textContent='Check your email and click the login link. You can close this tab.';
+  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href.split('#')[0]}});
+  if(error){m.className='msg err';m.textContent=error.message;} else m.textContent='Check your email and click the login link.';
 });
-$('#signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.reload(); });
-async function showApp(session){ $('#login').style.display='none'; $('#app').style.display='block'; $('#whoami').textContent=session.user.email; await loadAll(); }
+$('#signout').addEventListener('click',async()=>{await sb.auth.signOut();location.reload();});
+async function showApp(session){$('#login').style.display='none';$('#app').style.display='block';$('#whoami').textContent=session.user.email;await loadAll();}
 
 async function loadAll(){
-  const [co,act,ct,sw] = await Promise.all([
-    sb.from('companies').select('*').order('relevance',{ascending:true}).order('name'),
-    sb.from('activities').select('*').order('event_date',{ascending:false}),
-    sb.from('contacts').select('*').order('priority',{ascending:false}),
+  const [co,act,ct,sw]=await Promise.all([
+    sb.from('companies').select('*'),
+    sb.from('activities').select('*'),
+    sb.from('contacts').select('*'),
     sb.from('sweep_runs').select('*').order('ran_at',{ascending:false}).limit(1)
   ]);
   DATA.companies=co.data||[]; DATA.activities=act.data||[]; DATA.contacts=ct.data||[]; DATA.sweep=(sw.data&&sw.data[0])||null;
-  if(DATA.sweep){ const d=new Date(DATA.sweep.ran_at).toISOString().slice(0,10); $('#sweepInfo').textContent=`sweep ${d}`; }
-  renderTypeFilter(); renderThisWeek(); renderActivities(); renderCompanies(); renderContacts();
+  if(DATA.sweep){$('#sweepInfo').textContent=`sweep ${new Date(DATA.sweep.ran_at).toISOString().slice(0,10)}`;}
+  buildFilters(); renderThisWeek(); renderActivities(); renderCompanies(); renderContacts();
 }
-$('#refreshBtn').addEventListener('click', loadAll);
+$('#refreshBtn').addEventListener('click',loadAll);
+const coName=a=>a.company_name||(DATA.companies.find(c=>c.id===a.company_id)||{}).name||'';
 
-const coName = a => a.company_name || (DATA.companies.find(c=>c.id===a.company_id)||{}).name || '';
-
-function itemHTML(a,i){
-  const co=coName(a), dom=domain(a.source_url);
-  const title = a.source_url ? `<a href="${esc(a.source_url)}" target="_blank" rel="noopener">${esc(a.headline)}</a>` : esc(a.headline);
-  return `<div class="item ${a.reviewed?'':'unrev'}" data-id="${a.id}">
-    <div class="rank">${i!=null?(i+1)+'.':'▸'}</div>
-    <div class="body">
-      <div class="title">${title} ${dom?`<span class="dom">(${esc(dom)})</span>`:''}</div>
-      <div class="sub">
-        <span class="score s${a.relevance_score||0}">rel ${a.relevance_score||0}</span>
-        <span>${esc(a.event_date)}</span>${co?`<span>· ${esc(co)}</span>`:''}
-        <span class="ty ${esc(a.type)}">${esc(a.type)}</span>${a.region?`<span>· ${esc(a.region)}</span>`:''}
-        ${a.reviewed?'':'<span class="staged">staged</span>'}
-        <label class="chk"><input type="checkbox" class="revBox" ${a.reviewed?'checked':''}/> reviewed</label>
-      </div>
-      ${a.relevance_to_me?`<div class="why">▸ ${esc(a.relevance_to_me)}</div>`:''}
-      ${a.detail?`<div class="detail">${esc(a.detail)}</div>`:''}
-    </div>
-  </div>`;
+function buildFilters(){
+  opts($('#f-type'),[...new Set(DATA.activities.map(a=>a.type))].sort(),'all types');
+  opts($('#f-company'),[...new Set(DATA.activities.map(coName).filter(Boolean))].sort(),'all companies');
+  opts($('#f-region'),[...new Set(DATA.activities.map(a=>a.region).filter(Boolean))].sort(),'all regions');
+  opts($('#k-company'),[...new Set(DATA.contacts.map(c=>c.company_name).filter(Boolean))].sort(),'all companies');
 }
 
+/* THIS WEEK */
 function renderThisWeek(){
   const v=$('#view-thisweek');
   const unrev=DATA.activities.filter(a=>!a.reviewed).length;
   const top=DATA.activities.filter(a=>a.relevance_score>=4).sort((a,b)=>b.relevance_score-a.relevance_score||(a.event_date<b.event_date?1:-1)).slice(0,12);
   const meet=DATA.contacts.filter(c=>c.status==='to-reach').sort((a,b)=>(b.priority||0)-(a.priority||0)).slice(0,5);
-  let h=`<div class="kpis">
-    <span><b>${DATA.companies.length}</b> companies</span><span><b>${DATA.activities.length}</b> movements</span>
-    <span><b>${unrev}</b> need review</span><span><b>${DATA.contacts.length}</b> contacts</span></div>`;
-  h+=`<div class="sect">Top movements that matter</div>`;
-  h+=top.map((a,i)=>itemHTML(a,i)).join('')||`<div class="empty">No high-relevance items.</div>`;
-  h+=`<div class="sect">Who to meet next</div>`;
+  let h=`<div class="kpis"><span><b>${DATA.companies.length}</b> companies</span><span><b>${DATA.activities.length}</b> movements</span><span><b>${unrev}</b> need review</span><span><b>${DATA.contacts.length}</b> contacts</span></div>`;
+  h+=`<div class="sect">Top movements that matter</div><table class="tbl"><tbody>`;
+  h+=top.map(a=>{const dom=domain(a.source_url);const t=a.source_url?`<a href="${esc(a.source_url)}" target="_blank" rel="noopener">${esc(a.headline)}</a>`:esc(a.headline);
+    return `<tr class="r"><td class="c-rel"><span class="score s${a.relevance_score}">${a.relevance_score}</span></td><td class="c-date">${esc(a.event_date)}</td><td class="c-co">${esc(coName(a))}</td><td class="c-title">${t} ${dom?`<span class="dom">(${esc(dom)})</span>`:''}<div style="color:#444;font-size:12px">▸ ${esc(a.relevance_to_me||'')}</div></td></tr>`;}).join('')||'<tr><td class="empty">Nothing yet.</td></tr>';
+  h+=`</tbody></table><div class="sect">Who to meet next</div>`;
   h+=meet.length?`<div class="grid">${meet.map(contactHTML).join('')}</div>`:`<div class="empty">No open reach-outs.</div>`;
-  v.innerHTML=h; bindRowEvents(v); bindContactEvents(v);
+  v.innerHTML=h; bindContactEvents(v);
 }
 
-function renderTypeFilter(){
-  const t=[...new Set(DATA.activities.map(a=>a.type))].sort();
-  $('#actType').innerHTML=`<option value="">all types</option>`+t.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
-}
-function renderActivities(){
-  const q=$('#actSearch').value.toLowerCase(),ty=$('#actType').value,rv=$('#actReviewed').value,sort=$('#actSort').value;
-  let list=DATA.activities.filter(a=>{
-    if(ty&&a.type!==ty)return false;
-    if(rv==='true'&&!a.reviewed)return false;
-    if(rv==='false'&&a.reviewed)return false;
-    if(q){const b=(a.headline+' '+coName(a)+' '+(a.detail||'')).toLowerCase(); if(!b.includes(q))return false;}
-    return true;
-  });
-  list.sort(sort==='date'?(a,b)=>(a.event_date<b.event_date?1:-1):(a,b)=>(b.relevance_score-a.relevance_score)||(a.event_date<b.event_date?1:-1));
-  $('#actList').innerHTML=list.length?list.map((a,i)=>itemHTML(a,i)).join(''):`<div class="empty">No matching activities.</div>`;
-  bindRowEvents($('#actList'));
-}
-['#actSearch','#actType','#actReviewed','#actSort'].forEach(s=>$(s).addEventListener('input',renderActivities));
-
-function bindRowEvents(scope){
-  scope.querySelectorAll('.revBox').forEach(box=>box.addEventListener('change',async e=>{
-    const id=e.target.closest('.item').dataset.id,val=e.target.checked;
-    const {error}=await sb.from('activities').update({reviewed:val}).eq('id',id);
-    if(error){alert('Update failed: '+error.message);e.target.checked=!val;return;}
-    const a=DATA.activities.find(x=>x.id===id); if(a)a.reviewed=val;
-    e.target.closest('.item').classList.toggle('unrev',!val);
-    const s=e.target.closest('.item').querySelector('.staged'); if(s&&val)s.remove();
+/* ACTIVITIES TABLE */
+const COLS=[['reviewed','✓'],['event_date','Date'],['company','Company'],['type','Type'],['region','Region'],['relevance_score','Rel'],['headline','Headline']];
+function renderHead(){
+  $('#actHead').innerHTML=COLS.map(([c,l])=>{const a=actSort.col===c?`<span class="arr">${actSort.dir>0?'▲':'▼'}</span>`:'';return `<th data-c="${c}">${l} ${a}</th>`;}).join('');
+  $('#actHead').querySelectorAll('th').forEach(th=>th.addEventListener('click',()=>{
+    const c=th.dataset.c; if(actSort.col===c)actSort.dir*=-1; else actSort={col:c,dir:c==='relevance_score'?-1:1}; renderActivities();
   }));
 }
+function val(a,c){ if(c==='company')return coName(a).toLowerCase(); if(c==='reviewed')return a.reviewed?1:0; const x=a[c]; return typeof x==='string'?x.toLowerCase():(x==null?-Infinity:x); }
+function renderActivities(){
+  renderHead();
+  const q=$('#f-search').value.toLowerCase(),ty=$('#f-type').value,co=$('#f-company').value,rg=$('#f-region').value,rv=$('#f-reviewed').value,mr=+$('#f-minrel').value;
+  let list=DATA.activities.filter(a=>{
+    if(ty&&a.type!==ty)return false; if(co&&coName(a)!==co)return false; if(rg&&a.region!==rg)return false;
+    if(rv==='true'&&!a.reviewed)return false; if(rv==='false'&&a.reviewed)return false;
+    if(mr&&(a.relevance_score||0)<mr)return false;
+    if(q){const b=(a.headline+' '+coName(a)+' '+(a.detail||'')+' '+(a.relevance_to_me||'')).toLowerCase();if(!b.includes(q))return false;}
+    return true;
+  });
+  list.sort((a,b)=>{const x=val(a,actSort.col),y=val(b,actSort.col);return (x<y?-1:x>y?1:0)*actSort.dir;});
+  $('#actCount').textContent=`${list.length} of ${DATA.activities.length}`;
+  $('#actBody').innerHTML=list.length?list.map(rowHTML).join(''):'<tr><td colspan="7" class="empty">No matches.</td></tr>';
+  bindActRows();
+}
+function rowHTML(a){
+  const dom=domain(a.source_url);
+  const t=a.source_url?`<a href="${esc(a.source_url)}" target="_blank" rel="noopener">${esc(a.headline)}</a>`:esc(a.headline);
+  const open=expanded.has(a.id);
+  let h=`<tr class="r ${a.reviewed?'':'unrev'}" data-id="${a.id}">
+    <td><input type="checkbox" class="revBox" ${a.reviewed?'checked':''}/></td>
+    <td class="c-date">${esc(a.event_date)}</td>
+    <td class="c-co">${esc(coName(a))}</td>
+    <td><span class="ty ${esc(a.type)}">${esc(a.type)}</span></td>
+    <td class="c-co">${esc(a.region||'')}</td>
+    <td class="c-rel"><span class="score s${a.relevance_score||0}">${a.relevance_score||0}</span></td>
+    <td class="c-title">${t} ${dom?`<span class="dom">(${esc(dom)})</span>`:''} ${a.reviewed?'':'<span class="staged">staged</span>'}</td></tr>`;
+  if(open) h+=`<tr class="detrow"><td></td><td colspan="6"><div class="why">▸ ${esc(a.relevance_to_me||'')}</div>${a.detail?`<div>${esc(a.detail)}</div>`:''}${a.action?`<div class="act">⮕ ${esc(a.action)}</div>`:''}<div style="color:#999;font-size:11px;margin-top:4px">${esc(a.source_name||'')}</div></td></tr>`;
+  return h;
+}
+function bindActRows(){
+  $('#actBody').querySelectorAll('tr.r').forEach(tr=>{
+    tr.addEventListener('click',e=>{ if(e.target.classList.contains('revBox')||e.target.tagName==='A')return;
+      const id=tr.dataset.id; expanded.has(id)?expanded.delete(id):expanded.add(id); renderActivities(); });
+  });
+  $('#actBody').querySelectorAll('.revBox').forEach(box=>box.addEventListener('change',async e=>{
+    e.stopPropagation(); const id=e.target.closest('tr').dataset.id,v=e.target.checked;
+    const {error}=await sb.from('activities').update({reviewed:v}).eq('id',id);
+    if(error){alert('Update failed: '+error.message);e.target.checked=!v;return;}
+    const a=DATA.activities.find(x=>x.id===id); if(a)a.reviewed=v; renderActivities(); renderThisWeek();
+  }));
+}
+['#f-search','#f-type','#f-company','#f-region','#f-reviewed','#f-minrel'].forEach(s=>$(s).addEventListener('input',renderActivities));
+$('#f-clear').addEventListener('click',()=>{['#f-search','#f-type','#f-company','#f-region','#f-reviewed'].forEach(s=>$(s).value='');$('#f-minrel').value='0';renderActivities();});
 
-function flag(label,on,ok){ return `<span class="tag ${on?(ok?'on':'off'):''}">${label}</span>`; }
+/* COMPANIES */
+function flag(l,on,ok){return `<span class="tag ${on?(ok?'on':'off'):''}">${l}</span>`;}
 function companyHTML(c){
   const L=[];
   if(c.website)L.push(`<a href="${esc(c.website)}" target="_blank" rel="noopener">site</a>`);
@@ -273,16 +292,28 @@ function companyHTML(c){
   if(c.x_url)L.push(`<a href="${esc(c.x_url)}" target="_blank" rel="noopener">X</a>`);
   if(c.careers_url)L.push(`<a href="${esc(c.careers_url)}" target="_blank" rel="noopener">careers</a>`);
   return `<div class="box ${c.relevance==='core'?'core':''}">
-    <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
-      <div><h3>${esc(c.name)}</h3><div class="sub">${esc([c.hq_city,c.hq_country].filter(Boolean).join(', '))} · ${esc(c.category||'')}</div></div>
-      <span class="tag ${c.status==='ENGAGED'?'eng':''}">${esc(c.status||'')}</span></div>
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><h3>${esc(c.name)}</h3><div class="sub">${esc([c.hq_city,c.hq_country].filter(Boolean).join(', '))} · ${esc(c.category||'')}</div></div><span class="tag ${c.status==='ENGAGED'?'eng':''}">${esc(c.status||'')}</span></div>
     ${c.relevance_rationale?`<div class="ratio">${esc(c.relevance_rationale)}</div>`:''}
     <div class="tags"><span class="tag">${esc(c.relevance)}</span>${flag('GC contract',c.gc_engaged,true)}${c.five_eyes!==null?flag(c.five_eyes?'Five Eyes':'non-FVEY',true,c.five_eyes):''}</div>
     ${c.sovereignty_note?`<div class="sov">${esc(c.sovereignty_note)}</div>`:''}
     <div class="links">${L.join('')||'<span class="unver">no links yet</span>'}</div></div>`;
 }
-function renderCompanies(){ $('#coGrid').innerHTML=DATA.companies.map(companyHTML).join(''); }
+function renderCompanies(){
+  const q=$('#c-search').value.toLowerCase(),rel=$('#c-rel').value,fv=$('#c-fvey').value,sort=$('#c-sort').value;
+  let list=DATA.companies.filter(c=>{
+    if(rel&&c.relevance!==rel)return false;
+    if(fv==='true'&&c.five_eyes!==true)return false; if(fv==='false'&&c.five_eyes!==false)return false;
+    if(q){const b=(c.name+' '+(c.category||'')+' '+(c.hq_country||'')+' '+(c.relevance_rationale||'')).toLowerCase();if(!b.includes(q))return false;}
+    return true;
+  });
+  const ro={core:0,radar:1};
+  list.sort((a,b)=> sort==='name'?a.name.localeCompare(b.name): sort==='status'?(a.status||'').localeCompare(b.status||''):(ro[a.relevance]-ro[b.relevance])||a.name.localeCompare(b.name));
+  $('#coCount').textContent=`${list.length} of ${DATA.companies.length}`;
+  $('#coGrid').innerHTML=list.length?list.map(companyHTML).join(''):'<div class="empty">No matches.</div>';
+}
+['#c-search','#c-rel','#c-fvey','#c-sort'].forEach(s=>$(s).addEventListener('input',renderCompanies));
 
+/* CONTACTS */
 const STATUSES=['to-reach','contacted','connected','passed'];
 function contactHTML(c){
   const L=[];
@@ -296,17 +327,24 @@ function contactHTML(c){
     <div style="margin-top:9px"><select class="stSel">${STATUSES.map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div></div>`;
 }
 function renderContacts(){
-  const v=$('#view-contacts'),byCo={};
-  DATA.contacts.forEach(c=>{(byCo[c.company_name||'—']=byCo[c.company_name||'—']||[]).push(c);});
-  let h=''; Object.keys(byCo).sort().forEach(co=>{ h+=`<div class="sect">${esc(co)}</div><div class="grid">${byCo[co].map(contactHTML).join('')}</div>`; });
-  v.innerHTML=h||`<div class="empty">No contacts yet.</div>`; bindContactEvents(v);
+  const q=$('#k-search').value.toLowerCase(),co=$('#k-company').value,st=$('#k-status').value,sort=$('#k-sort').value;
+  let list=DATA.contacts.filter(c=>{
+    if(co&&c.company_name!==co)return false; if(st&&c.status!==st)return false;
+    if(q){const b=(c.full_name+' '+(c.title||'')+' '+(c.company_name||'')+' '+(c.reach_out_angle||'')).toLowerCase();if(!b.includes(q))return false;}
+    return true;
+  });
+  list.sort((a,b)=> sort==='name'?a.full_name.localeCompare(b.full_name):(b.priority||0)-(a.priority||0));
+  $('#ctCount').textContent=`${list.length} of ${DATA.contacts.length}`;
+  $('#ctGrid').innerHTML=list.length?list.map(contactHTML).join(''):'<div class="empty">No matches.</div>';
+  bindContactEvents($('#ctGrid'));
 }
+['#k-search','#k-company','#k-status','#k-sort'].forEach(s=>$(s).addEventListener('input',renderContacts));
 function bindContactEvents(scope){
   scope.querySelectorAll('.stSel').forEach(sel=>sel.addEventListener('change',async e=>{
-    const id=e.target.closest('.ct').dataset.id,val=e.target.value;
-    const {error}=await sb.from('contacts').update({status:val}).eq('id',id);
+    const id=e.target.closest('.ct').dataset.id,v=e.target.value;
+    const {error}=await sb.from('contacts').update({status:v}).eq('id',id);
     if(error){alert('Update failed: '+error.message);return;}
-    const c=DATA.contacts.find(x=>x.id===id); if(c)c.status=val;
+    const c=DATA.contacts.find(x=>x.id===id); if(c)c.status=v;
   }));
 }
 
