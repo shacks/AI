@@ -94,6 +94,7 @@
   .cday{background:var(--paper);min-height:92px;padding:4px}
   .cday .d{font-size:11px;color:var(--meta)} .cday.out{background:#fbfbf9}
   .cev{background:var(--hl);border-left:3px solid var(--bar);border-radius:3px;padding:2px 5px;margin-top:3px;font-size:11px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cev.cdl{background:#fdeaea;border-left-color:var(--bad);color:#8a2a22}
 
   /* modal */
   .ov{position:fixed;inset:0;background:rgba(20,20,25,.45);display:none;align-items:flex-start;justify-content:center;z-index:50;overflow:auto;padding:40px 14px}
@@ -237,11 +238,26 @@ const CONFIG={
       {k:'source_name',label:'Source',type:'text',w:150},
       {k:'source_url',label:'Src',type:'url',w:50}
     ]},
+  conferences:{label:'Conferences',table:'conferences',title:'name',views:['grid','calendar'],group:'',dateField:'start_date',calDefault:'now',
+    calMarks:[{field:'start_date',kind:'event'},{field:'cfp_deadline',kind:'deadline'},{field:'registration_deadline',kind:'deadline'}],
+    fields:[
+      {k:'name',label:'Name',type:'text',w:250},
+      {k:'start_date',label:'Start',type:'date',w:104},
+      {k:'end_date',label:'End',type:'date',w:104},
+      {k:'cfp_deadline',label:'CFP deadline',type:'date',w:120},
+      {k:'location',label:'Location',type:'text',w:170},
+      {k:'relevance_score',label:'Rel',type:'rating',w:58},
+      {k:'url',label:'Site',type:'url',w:50},
+      {k:'registration_deadline',label:'Registration deadline',type:'date',modal:1},
+      {k:'topics',label:'Topics',type:'longtext',modal:1},
+      {k:'notes',label:'Notes',type:'longtext',modal:1},
+      {k:'source',label:'Source',type:'text',modal:1}
+    ]},
 };
 const fieldOf=(t,k)=>CONFIG[t].fields.find(f=>f.k===k);
 const gridFields=t=>CONFIG[t].fields.filter(f=>!f.modal);
 
-let DATA={activities:[],companies:[],contacts:[],digest_items:[]};
+let DATA={activities:[],companies:[],contacts:[],digest_items:[],conferences:[]};
 let cur='activities';
 const ST={};
 for(const t in CONFIG) ST[t]={view:'grid',sort:{col:CONFIG[t].fields[0].k,dir:1},group:'',search:'',filters:[],calMonth:null,collapsed:new Set()};
@@ -260,11 +276,11 @@ async function showApp(s){$('#login').style.display='none';$('#app').style.displ
 $('#refreshBtn').onclick=loadAll;
 
 async function loadAll(){
-  const [a,c,k,dg,sw]=await Promise.all([
+  const [a,c,k,dg,cf,sw]=await Promise.all([
     sb.from('activities').select('*'),sb.from('companies').select('*'),sb.from('contacts').select('*'),
-    sb.from('digest_items').select('*'),
+    sb.from('digest_items').select('*'),sb.from('conferences').select('*'),
     sb.from('sweep_runs').select('ran_at').order('ran_at',{ascending:false}).limit(1)]);
-  DATA.activities=a.data||[];DATA.companies=c.data||[];DATA.contacts=k.data||[];DATA.digest_items=dg.data||[];
+  DATA.activities=a.data||[];DATA.companies=c.data||[];DATA.contacts=k.data||[];DATA.digest_items=dg.data||[];DATA.conferences=cf.data||[];
   if(sw.data&&sw.data[0])$('#sweepInfo').textContent='sweep '+new Date(sw.data[0].ran_at).toISOString().slice(0,10);
   render();
 }
@@ -407,18 +423,25 @@ function kcMeta(t,r){
 
 /* ---------- CALENDAR ---------- */
 function renderCalendar(){
-  const t=cur,df=CONFIG[t].dateField,rows=rowsFor(t).filter(r=>r[df]);
-  const s=ST[t];
-  if(!s.calMonth){const ds=rows.map(r=>r[df]).sort();s.calMonth=(ds[ds.length-1]||new Date().toISOString()).slice(0,7);}
+  const t=cur,conf=CONFIG[t],s=ST[t];
+  const marks=conf.calMarks||[{field:conf.dateField,kind:'event'}];
+  const rows=rowsFor(t);
+  const byDay={};
+  rows.forEach(r=>marks.forEach(m=>{const d=r[m.field];if(d){(byDay[d]=byDay[d]||[]).push({r,m});}}));
+  if(!s.calMonth){
+    if(conf.calDefault==='now')s.calMonth=new Date().toISOString().slice(0,7);
+    else{const ds=Object.keys(byDay).sort();s.calMonth=(ds[ds.length-1]||new Date().toISOString()).slice(0,7);}
+  }
   const [Y,M]=s.calMonth.split('-').map(Number);
   const first=new Date(Y,M-1,1),start=new Date(first);start.setDate(1-first.getDay());
-  const byDay={};rows.forEach(r=>{(byDay[r[df]]=byDay[r[df]]||[]).push(r);});
-  $('#count').textContent=`${rows.length} dated`;
-  let h=`<div class="cal"><div class="calhd"><button class="calnav" id="cPrev">‹</button><b>${first.toLocaleString('en',{month:'long'})} ${Y}</b><button class="calnav" id="cNext">›</button></div><div class="cgrid">`;
+  let placements=0;Object.values(byDay).forEach(a=>placements+=a.length);
+  $('#count').textContent=`${placements} dated`;
+  let h=`<div class="cal"><div class="calhd"><button class="calnav" id="cPrev">‹</button><b>${first.toLocaleString('en',{month:'long'})} ${Y}</b><button class="calnav" id="cNext">›</button><span style="color:var(--meta);font-size:11px">orange = event · red ⚑ = deadline</span></div><div class="cgrid">`;
   ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>h+=`<div class="cdow">${d}</div>`);
   for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const iso=d.toISOString().slice(0,10);const out=d.getMonth()!==M-1;
     h+=`<div class="cday ${out?'out':''}"><div class="d">${d.getDate()}</div>`;
-    (byDay[iso]||[]).forEach(r=>h+=`<div class="cev" data-id="${r.id}" title="${esc(r[CONFIG[t].title])}">${esc(r[CONFIG[t].title])}</div>`);
+    (byDay[iso]||[]).forEach(p=>{const dl=p.m.kind==='deadline',ttl=esc(p.r[conf.title]);
+      h+=`<div class="cev ${dl?'cdl':''}" data-id="${p.r.id}" title="${dl?'Deadline — ':''}${ttl}">${dl?'⚑ ':''}${ttl}</div>`;});
     h+='</div>';}
   h+='</div></div>';
   $('#container').innerHTML=h;
@@ -475,7 +498,8 @@ async function save(t,id,patch,inModal){
 async function addRow(){
   const t=cur,def={activities:{event_date:new Date().toISOString().slice(0,10),type:'other',headline:'New movement',reviewed:false,logged_by:'manual'},
     companies:{name:'New company',relevance:'radar',status:'WATCH'},contacts:{full_name:'New contact',status:'to-reach'},
-    digest_items:{digest_date:new Date().toISOString().slice(0,10),section:'AI — General',headline:'New item'}}[t];
+    digest_items:{digest_date:new Date().toISOString().slice(0,10),section:'AI — General',headline:'New item'},
+    conferences:{name:'New conference'}}[t];
   const {data,error}=await sb.from(CONFIG[t].table).insert(def).select().single();
   if(error){alert('Add failed: '+error.message);return;}
   DATA[t].unshift(data);render();openRecord(t,data.id);
