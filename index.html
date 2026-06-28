@@ -171,7 +171,8 @@ const COL={
   status:{ENGAGED:['#ffe7d1','#c2410c'],WATCH:['#fff4d6','#8a6d10'],MONITOR:['#e3edf6','#2f5d80']},
   relevance:{core:['#ffe7d1','#c2410c'],radar:['#ecebe3','#6b6b6b']},
   type:{funding:['#f6ecd5','#8a5d0a'],partnership:['#efe2f6','#7a3fa0'],'gov-deal':['#f7e1e1','#b13a31'],'exec-move':['#d8eeeb','#16776c'],product:['#dff0e6','#1f7a45'],conference:['#e1ebf7','#2f5d80'],policy:['#f7e1e1','#b13a31'],other:['#ececE4','#666']},
-  cstatus:{'to-reach':['#fff4d6','#8a6d10'],contacted:['#e1ebf7','#2f5d80'],connected:['#dff0e6','#1f7a45'],passed:['#ececE4','#777']}
+  cstatus:{'to-reach':['#fff4d6','#8a6d10'],contacted:['#e1ebf7','#2f5d80'],connected:['#dff0e6','#1f7a45'],passed:['#ececE4','#777']},
+  section:{'AI — General':['#e1ebf7','#2f5d80'],'AI — Hardware & Compute':['#f6ecd5','#8a5d0a'],'Defence & Military AI':['#f7e1e1','#b13a31'],'Canada — Domestic AI':['#dff0e6','#1f7a45'],'Conference Opportunities':['#efe2f6','#7a3fa0'],'Investing — Analyst Commentary':['#ececE4','#666']}
 };
 const TYPES=['funding','partnership','gov-deal','exec-move','product','conference','policy','other'];
 const rateColor=v=>v>=5?'#ff6600':v>=4?'#e08a1e':v>=3?'#2d7ff9':v>=1?'#9aa0aa':'#d0d0c8';
@@ -227,11 +228,20 @@ const CONFIG={
       {k:'location',label:'Location',type:'text',modal:1},
       {k:'source_url',label:'Source',type:'url',modal:1}
     ]},
+  digest_items:{label:'Digest',table:'digest_items',title:'headline',views:['grid','kanban','calendar'],group:'section',dateField:'digest_date',
+    fields:[
+      {k:'digest_date',label:'Date',type:'date',w:104},
+      {k:'headline',label:'Headline',type:'text',w:480},
+      {k:'section',label:'Section',type:'select',opts:['AI — General','AI — Hardware & Compute','Defence & Military AI','Canada — Domestic AI','Conference Opportunities','Investing — Analyst Commentary'],colors:COL.section,w:200},
+      {k:'trl7',label:'TRL7',type:'checkbox',w:56},
+      {k:'source_name',label:'Source',type:'text',w:150},
+      {k:'source_url',label:'Src',type:'url',w:50}
+    ]},
 };
 const fieldOf=(t,k)=>CONFIG[t].fields.find(f=>f.k===k);
 const gridFields=t=>CONFIG[t].fields.filter(f=>!f.modal);
 
-let DATA={activities:[],companies:[],contacts:[]};
+let DATA={activities:[],companies:[],contacts:[],digest_items:[]};
 let cur='activities';
 const ST={};
 for(const t in CONFIG) ST[t]={view:'grid',sort:{col:CONFIG[t].fields[0].k,dir:1},group:'',search:'',filters:[],calMonth:null,collapsed:new Set()};
@@ -250,10 +260,11 @@ async function showApp(s){$('#login').style.display='none';$('#app').style.displ
 $('#refreshBtn').onclick=loadAll;
 
 async function loadAll(){
-  const [a,c,k,sw]=await Promise.all([
+  const [a,c,k,dg,sw]=await Promise.all([
     sb.from('activities').select('*'),sb.from('companies').select('*'),sb.from('contacts').select('*'),
+    sb.from('digest_items').select('*'),
     sb.from('sweep_runs').select('ran_at').order('ran_at',{ascending:false}).limit(1)]);
-  DATA.activities=a.data||[];DATA.companies=c.data||[];DATA.contacts=k.data||[];
+  DATA.activities=a.data||[];DATA.companies=c.data||[];DATA.contacts=k.data||[];DATA.digest_items=dg.data||[];
   if(sw.data&&sw.data[0])$('#sweepInfo').textContent='sweep '+new Date(sw.data[0].ran_at).toISOString().slice(0,10);
   render();
 }
@@ -390,6 +401,7 @@ function renderKanban(){
 function kcMeta(t,r){
   if(t==='activities')return `<span>${esc(r.event_date||'')}</span><span class="rb" style="background:${rateColor(r.relevance_score)};color:#fff">${r.relevance_score||'-'}</span><span>${esc(r.company_name||'')}</span>`;
   if(t==='companies')return `<span>${esc(r.category||'')}</span><span>${esc(r.hq_country||'')}</span>`;
+  if(t==='digest_items')return `<span>${esc(r.digest_date||'')}</span>${r.trl7?'<span class="rb" style="background:#ff6600;color:#fff">7+</span>':''}<span>${esc(r.source_name||'')}</span>`;
   return `<span>${esc(r.title||'')}</span><span>${esc(r.company_name||'')}</span>`;
 }
 
@@ -462,7 +474,8 @@ async function save(t,id,patch,inModal){
 }
 async function addRow(){
   const t=cur,def={activities:{event_date:new Date().toISOString().slice(0,10),type:'other',headline:'New movement',reviewed:false,logged_by:'manual'},
-    companies:{name:'New company',relevance:'radar',status:'WATCH'},contacts:{full_name:'New contact',status:'to-reach'}}[t];
+    companies:{name:'New company',relevance:'radar',status:'WATCH'},contacts:{full_name:'New contact',status:'to-reach'},
+    digest_items:{digest_date:new Date().toISOString().slice(0,10),section:'AI — General',headline:'New item'}}[t];
   const {data,error}=await sb.from(CONFIG[t].table).insert(def).select().single();
   if(error){alert('Add failed: '+error.message);return;}
   DATA[t].unshift(data);render();openRecord(t,data.id);
