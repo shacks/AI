@@ -4,110 +4,114 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex, nofollow" />
-<title>AI Landscape // JARVIS</title>
+<title>AI Landscape</title>
 <style>
   :root{
-    --bg:#0b0e14; --panel:#11161f; --panel2:#0e131b; --line:#1e2733;
-    --ink:#e6e9ef; --dim:#8a97a8; --faint:#5b6675;
-    --gold:#d9a441; --gold2:#f0c068; --red:#c0504d; --green:#4f9d69; --blue:#4a7fb5;
-    --mono:'SFMono-Regular',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --bg:#f6f6ef; --paper:#ffffff; --bar:#ff6600; --ink:#1a1a1a; --meta:#828282;
+    --line:#e2e2da; --accent:#ff6600; --link:#1a1a1a; --good:#2a8a4a; --bad:#b33; --blue:#3b6ea5;
+    --sans:Verdana,Geneva,'Segoe UI',sans-serif;
+    --mono:ui-monospace,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
-  a{color:var(--gold2);text-decoration:none}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;line-height:1.5}
+  a{color:var(--link);text-decoration:none}
   a:hover{text-decoration:underline}
-  .mono{font-family:var(--mono)}
-  .banner{background:repeating-linear-gradient(45deg,#caa23d,#caa23d 14px,#b8922f 14px,#b8922f 28px);
-    color:#1a1206;text-align:center;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:3px;padding:5px}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+  .wrap{max-width:1024px;margin:0 auto;padding:0 14px}
+  .note{font-family:var(--mono);font-size:10px;color:#b0b0a6;text-align:center;padding:3px;letter-spacing:1px}
 
   /* login */
-  #login{min-height:80vh;display:flex;align-items:center;justify-content:center}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:34px;max-width:420px;width:100%}
-  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
-  h1{font-family:var(--mono);font-size:30px;letter-spacing:4px;margin:6px 0 2px}
-  input,select,button{font-family:var(--sans);font-size:14px}
-  input[type=email],input[type=text]{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
-    padding:11px 13px;border-radius:7px;margin-top:14px}
-  button{cursor:pointer;background:var(--gold);color:#1a1206;border:none;font-weight:700;padding:11px 18px;border-radius:7px;margin-top:14px}
-  button.ghost{background:transparent;color:var(--dim);border:1px solid var(--line);font-weight:500}
-  button:hover{filter:brightness(1.07)}
-  .msg{margin-top:14px;font-size:13px;color:var(--dim)}
-  .msg.err{color:var(--red)}
+  #login{min-height:78vh;display:flex;align-items:center;justify-content:center}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:28px;max-width:380px;width:100%}
+  .card .logo{background:var(--bar);color:#fff;font-weight:bold;padding:3px 7px;display:inline-block;border-radius:2px}
+  h1{font-size:20px;margin:14px 0 2px}
+  .card .tag{color:var(--meta);font-size:12px}
+  input[type=email],input[type=text]{width:100%;background:var(--paper);border:1px solid #cfcfc6;color:var(--ink);
+    padding:9px 10px;border-radius:3px;margin-top:14px;font-family:var(--sans);font-size:13px}
+  button{cursor:pointer;background:var(--bar);color:#fff;border:none;font-weight:bold;padding:9px 16px;border-radius:3px;margin-top:12px;font-family:var(--sans);font-size:13px}
+  button.ghost{background:#efefe8;color:#444;border:1px solid #d8d8cf;font-weight:normal;padding:5px 10px;margin:0}
+  button:hover{filter:brightness(.96)}
+  .msg{margin-top:12px;font-size:12px;color:var(--meta)}
+  .msg.err{color:var(--bad)}
 
-  /* app shell */
+  /* app */
   #app{display:none}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:10px}
-  .brand{font-family:var(--mono);letter-spacing:3px;font-size:15px}
-  .brand b{color:var(--gold)}
-  .who{font-family:var(--mono);font-size:11px;color:var(--faint)}
-  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:2px;flex-wrap:wrap}
-  .tab{font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--dim);padding:13px 16px;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase}
-  .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-  .view{display:none;padding:22px 0 60px}
+  .bar{background:var(--bar);color:#fff}
+  .bar .wrap{display:flex;align-items:center;gap:14px;padding:5px 14px;flex-wrap:wrap}
+  .bar .brand{font-weight:bold}
+  .bar .nav{display:flex;gap:12px;flex-wrap:wrap}
+  .bar .nav a{color:#fff3e0;cursor:pointer;font-size:12.5px}
+  .bar .nav a.active{color:#fff;font-weight:bold}
+  .bar .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .bar .right .who{color:#ffe0c2;font-size:11px;font-family:var(--mono)}
+
+  .view{display:none;padding:16px 0 60px}
   .view.active{display:block}
-  .sect{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin:26px 0 12px;border-bottom:1px solid var(--line);padding-bottom:7px}
-  .sect:first-child{margin-top:6px}
+  .sect{font-size:12px;font-weight:bold;color:#444;text-transform:uppercase;letter-spacing:1px;margin:22px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  .sect:first-child{margin-top:4px}
 
-  /* controls */
-  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-  .controls select,.controls input{background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px 10px;border-radius:6px;margin:0}
-  .controls input{width:220px}
-  .pill{font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--dim);text-transform:uppercase;white-space:nowrap}
-  .pill.s5{color:#1a1206;background:var(--gold);border-color:var(--gold)}
-  .pill.s4{color:var(--gold2);border-color:#5a4a1f}
-  .pill.s3{color:var(--blue);border-color:#274055}
-  .pill.s2,.pill.s1{color:var(--faint)}
-  .pill.t-gov-deal,.pill.t-policy{color:var(--red);border-color:#4a2422}
-  .pill.t-product{color:var(--green);border-color:#234231}
-  .pill.t-funding{color:var(--gold2);border-color:#5a4a1f}
-  .pill.t-conference{color:var(--blue);border-color:#274055}
-  .pill.new{color:#1a1206;background:var(--gold2);border-color:var(--gold2)}
+  .kpis{display:flex;gap:18px;flex-wrap:wrap;padding:8px 0;color:var(--meta);font-size:12px}
+  .kpis b{color:var(--ink);font-size:15px}
 
-  /* activity rows */
-  .row{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:14px 16px;margin-bottom:10px}
-  .row.unrev{border-left:3px solid var(--gold)}
-  .row .head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-  .row .hl{font-weight:600;font-size:15px;color:var(--ink)}
-  .row .meta{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:5px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .row .why{color:var(--dim);font-size:13px;margin-top:9px}
-  .row .detail{color:var(--faint);font-size:12.5px;margin-top:6px}
-  .row .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;flex-wrap:wrap}
-  .chk{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--dim);cursor:pointer}
-  .chk input{width:15px;height:15px;accent-color:var(--gold)}
+  .controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .controls select,.controls input{background:var(--paper);border:1px solid #cfcfc6;color:var(--ink);padding:6px 8px;border-radius:3px;font-family:var(--sans);font-size:12px}
+  .controls input{width:240px}
 
-  /* grids */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-  .co{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:16px}
-  .co.core{border-top:3px solid var(--gold)}
-  .co h3{margin:0;font-size:17px;font-family:var(--mono);letter-spacing:1px}
-  .co .sub{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:3px}
-  .co .ratio{color:var(--dim);font-size:13px;margin:10px 0}
-  .flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  .links{display:flex;gap:12px;margin-top:11px;font-family:var(--mono);font-size:12px}
-  .ct .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-  .ct .nm{font-weight:600}
-  .ct .ti{font-family:var(--mono);font-size:11px;color:var(--faint)}
-  .ct .ang{color:var(--dim);font-size:13px;margin:8px 0}
-  .ct select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:5px 8px;border-radius:6px;font-size:12px}
-  .unver{color:var(--red);font-family:var(--mono);font-size:10px;letter-spacing:1px}
-  .empty{color:var(--faint);font-style:italic;padding:20px 0}
-  .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 18px;min-width:120px}
-  .kpi b{font-family:var(--mono);font-size:24px;color:var(--gold);display:block}
-  .kpi span{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--faint);text-transform:uppercase}
+  /* HN-style ranked list */
+  .item{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #ececE4;align-items:baseline}
+  .item .rank{color:var(--meta);font-size:13px;min-width:22px;text-align:right}
+  .item .body{flex:1}
+  .item .title{font-size:14px}
+  .item .title a{color:var(--link)}
+  .item .dom{color:var(--meta);font-size:11px}
+  .item .sub{color:var(--meta);font-size:11px;margin-top:2px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .item .why{color:#3a3a3a;font-size:12px;margin-top:4px}
+  .item .detail{color:var(--meta);font-size:11.5px;margin-top:2px}
+  .item.unrev .rank{color:var(--accent)}
+  .score{font-weight:bold}
+  .score.s5{color:var(--accent)} .score.s4{color:#c8740a} .score.s3{color:var(--blue)} .score.s2,.score.s1{color:var(--meta)}
+  .ty{font-family:var(--mono);font-size:10px;color:#666;background:#ececE4;padding:1px 5px;border-radius:2px}
+  .ty.gov-deal,.ty.policy{color:#a33;background:#f6e8e8}
+  .ty.product{color:#2a7a45;background:#e6f1e9}
+  .ty.funding{color:#9a6a10;background:#f4ecda}
+  .ty.conference{color:#36607f;background:#e6eef4}
+  .staged{color:var(--accent);font-family:var(--mono);font-size:10px;border:1px solid #ffd2a8;padding:0 4px;border-radius:2px}
+  .chk{font-size:11px;color:var(--meta);cursor:pointer;user-select:none}
+  .chk input{vertical-align:middle;accent-color:var(--accent)}
+
+  /* companies + contacts */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+  .box{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:13px}
+  .box.core{border-left:3px solid var(--accent)}
+  .box h3{margin:0;font-size:15px}
+  .box .sub{color:var(--meta);font-size:11px;margin-top:2px}
+  .box .ratio{font-size:12.5px;margin:8px 0;color:#333}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .tag{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:2px;background:#ececE4;color:#555}
+  .tag.on{background:#e6f1e9;color:var(--good)} .tag.off{background:#f6e8e8;color:var(--bad)}
+  .tag.eng{background:var(--accent);color:#fff}
+  .links{display:flex;gap:11px;margin-top:9px;font-size:12px}
+  .links a{color:var(--blue)}
+  .sov{color:var(--meta);font-size:11px;margin-top:7px}
+  .ct .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .ct .nm{font-weight:bold}
+  .ct .ti{color:var(--meta);font-size:11px}
+  .ct .ang{font-size:12.5px;margin:7px 0;color:#333}
+  .ct select{background:var(--paper);border:1px solid #cfcfc6;padding:4px 7px;border-radius:3px;font-size:12px;font-family:var(--sans)}
+  .unver{color:var(--bad);font-family:var(--mono);font-size:10px}
+  .empty{color:var(--meta);font-style:italic;padding:16px 0}
+  .prio{font-family:var(--mono);font-size:10px;color:#fff;background:#bbb;padding:1px 5px;border-radius:2px}
+  .prio.p5{background:var(--accent)} .prio.p4{background:#c8740a} .prio.p3{background:var(--blue)}
 </style>
 </head>
 <body>
-<div class="banner">UNCLASSIFIED // PERSONAL WORKING DB // NOT FOR DISTRIBUTION</div>
+<div class="note">UNCLASSIFIED // PERSONAL WORKING DB // NOT FOR DISTRIBUTION</div>
 
 <!-- LOGIN -->
 <div id="login">
   <div class="card">
-    <div class="eyebrow">OP MAIPLE STACK // JARVIS</div>
-    <h1>AI&nbsp;LANDSCAPE</h1>
-    <div class="mono" style="color:var(--faint);font-size:11px;letter-spacing:2px">VENDOR &amp; MOVEMENTS INTELLIGENCE</div>
+    <span class="logo">AI</span>
+    <h1>AI Landscape</h1>
+    <div class="tag">Vendor &amp; movements intelligence · JARVIS</div>
     <input id="email" type="email" placeholder="your email" autocomplete="email" />
     <button id="sendBtn">Send me a login link</button>
     <div id="loginMsg" class="msg"></div>
@@ -116,23 +120,23 @@
 
 <!-- APP -->
 <div id="app">
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">AI&nbsp;<b>LANDSCAPE</b>&nbsp;// JARVIS</div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <span id="sweepInfo" class="who"></span>
-        <span id="whoami" class="who"></span>
-        <button id="refreshBtn" class="ghost" style="margin:0;padding:7px 12px">Refresh</button>
-        <button id="signout" class="ghost" style="margin:0;padding:7px 12px">Sign out</button>
-      </div>
+  <div class="bar"><div class="wrap">
+    <span class="brand">AI Landscape</span>
+    <div class="nav">
+      <a data-tab="thisweek" class="active">this week</a>
+      <a data-tab="activities">activities</a>
+      <a data-tab="companies">companies</a>
+      <a data-tab="contacts">who to meet</a>
     </div>
-    <div class="tabs">
-      <div class="tab active" data-tab="thisweek">This Week</div>
-      <div class="tab" data-tab="activities">Activities</div>
-      <div class="tab" data-tab="companies">Companies</div>
-      <div class="tab" data-tab="contacts">Who to Meet</div>
+    <div class="right">
+      <span id="sweepInfo" class="who"></span>
+      <span id="whoami" class="who"></span>
+      <button id="refreshBtn" class="ghost">refresh</button>
+      <button id="signout" class="ghost">sign out</button>
     </div>
+  </div></div>
 
+  <div class="wrap">
     <div id="view-thisweek" class="view active"></div>
 
     <div id="view-activities" class="view">
@@ -140,14 +144,9 @@
         <input id="actSearch" type="text" placeholder="search headline / company..." />
         <select id="actType"><option value="">all types</option></select>
         <select id="actReviewed">
-          <option value="">all</option>
-          <option value="false">needs review</option>
-          <option value="true">reviewed</option>
+          <option value="">all</option><option value="false">needs review</option><option value="true">reviewed</option>
         </select>
-        <select id="actSort">
-          <option value="score">sort: relevance</option>
-          <option value="date">sort: date</option>
-        </select>
+        <select id="actSort"><option value="score">sort: relevance</option><option value="date">sort: date</option></select>
       </div>
       <div id="actList"></div>
     </div>
@@ -159,7 +158,6 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
 const SUPABASE_URL = 'https://gfnhzmtmjhvleyffpkfp.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_8wUYKf1D0roWMfLh9-GcXQ_79-Fkrm-';
 const OWNER = 'shashank.sunil@gmail.com';
@@ -167,195 +165,156 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ detectSessionInUrl:
 
 const $ = s => document.querySelector(s);
 const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const domain = u => { try { return new URL(u).hostname.replace(/^www\./,''); } catch { return ''; } };
 let DATA = { companies:[], activities:[], contacts:[], sweep:null };
 
-/* ---------- auth ---------- */
 async function init(){
   const { data:{ session } } = await sb.auth.getSession();
-  if(session && session.user?.email?.toLowerCase()===OWNER){ showApp(session); }
+  if(session && session.user?.email?.toLowerCase()===OWNER) showApp(session);
   else { $('#login').style.display='flex'; $('#app').style.display='none'; }
 }
-sb.auth.onAuthStateChange((_e, session)=>{
-  if(session && session.user?.email?.toLowerCase()===OWNER) showApp(session);
-});
+sb.auth.onAuthStateChange((_e, session)=>{ if(session && session.user?.email?.toLowerCase()===OWNER) showApp(session); });
 $('#sendBtn').addEventListener('click', async ()=>{
-  const email = $('#email').value.trim();
-  const m = $('#loginMsg'); m.className='msg';
+  const email=$('#email').value.trim(); const m=$('#loginMsg'); m.className='msg';
   if(!email){ m.textContent='Enter your email.'; return; }
   m.textContent='Sending...';
   const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.href.split('#')[0] } });
   if(error){ m.className='msg err'; m.textContent=error.message; }
-  else { m.textContent='Check your email and click the login link. You can close this tab.'; }
+  else m.textContent='Check your email and click the login link. You can close this tab.';
 });
 $('#signout').addEventListener('click', async ()=>{ await sb.auth.signOut(); location.reload(); });
+async function showApp(session){ $('#login').style.display='none'; $('#app').style.display='block'; $('#whoami').textContent=session.user.email; await loadAll(); }
 
-async function showApp(session){
-  $('#login').style.display='none';
-  $('#app').style.display='block';
-  $('#whoami').textContent = session.user.email;
-  await loadAll();
-}
-
-/* ---------- data ---------- */
 async function loadAll(){
-  const [co, act, ct, sw] = await Promise.all([
+  const [co,act,ct,sw] = await Promise.all([
     sb.from('companies').select('*').order('relevance',{ascending:true}).order('name'),
     sb.from('activities').select('*').order('event_date',{ascending:false}),
     sb.from('contacts').select('*').order('priority',{ascending:false}),
     sb.from('sweep_runs').select('*').order('ran_at',{ascending:false}).limit(1)
   ]);
-  DATA.companies = co.data||[]; DATA.activities = act.data||[]; DATA.contacts = ct.data||[];
-  DATA.sweep = (sw.data&&sw.data[0])||null;
-  if(DATA.sweep){ const d=new Date(DATA.sweep.ran_at).toISOString().slice(0,10);
-    $('#sweepInfo').textContent = `last sweep ${d} · ${DATA.sweep.new_activities} new`; }
+  DATA.companies=co.data||[]; DATA.activities=act.data||[]; DATA.contacts=ct.data||[]; DATA.sweep=(sw.data&&sw.data[0])||null;
+  if(DATA.sweep){ const d=new Date(DATA.sweep.ran_at).toISOString().slice(0,10); $('#sweepInfo').textContent=`sweep ${d}`; }
   renderTypeFilter(); renderThisWeek(); renderActivities(); renderCompanies(); renderContacts();
 }
 $('#refreshBtn').addEventListener('click', loadAll);
 
-/* ---------- helpers ---------- */
-const typeChip = t => `<span class="pill t-${esc(t)}">${esc(t)}</span>`;
-const scoreChip = s => `<span class="pill s${s}">REL ${s}</span>`;
 const coName = a => a.company_name || (DATA.companies.find(c=>c.id===a.company_id)||{}).name || '';
 
-/* ---------- this week ---------- */
-function renderThisWeek(){
-  const v=$('#view-thisweek');
-  const unrev = DATA.activities.filter(a=>!a.reviewed).length;
-  const top = DATA.activities.filter(a=>a.relevance_score>=4)
-    .sort((a,b)=> b.relevance_score-a.relevance_score || (a.event_date<b.event_date?1:-1)).slice(0,12);
-  const meet = DATA.contacts.filter(c=>c.status==='to-reach').sort((a,b)=>(b.priority||0)-(a.priority||0)).slice(0,5);
-  let h = `<div class="kpis">
-    <div class="kpi"><b>${DATA.companies.length}</b><span>companies</span></div>
-    <div class="kpi"><b>${DATA.activities.length}</b><span>movements</span></div>
-    <div class="kpi"><b>${unrev}</b><span>need review</span></div>
-    <div class="kpi"><b>${DATA.contacts.length}</b><span>contacts</span></div>
+function itemHTML(a,i){
+  const co=coName(a), dom=domain(a.source_url);
+  const title = a.source_url ? `<a href="${esc(a.source_url)}" target="_blank" rel="noopener">${esc(a.headline)}</a>` : esc(a.headline);
+  return `<div class="item ${a.reviewed?'':'unrev'}" data-id="${a.id}">
+    <div class="rank">${i!=null?(i+1)+'.':'▸'}</div>
+    <div class="body">
+      <div class="title">${title} ${dom?`<span class="dom">(${esc(dom)})</span>`:''}</div>
+      <div class="sub">
+        <span class="score s${a.relevance_score||0}">rel ${a.relevance_score||0}</span>
+        <span>${esc(a.event_date)}</span>${co?`<span>· ${esc(co)}</span>`:''}
+        <span class="ty ${esc(a.type)}">${esc(a.type)}</span>${a.region?`<span>· ${esc(a.region)}</span>`:''}
+        ${a.reviewed?'':'<span class="staged">staged</span>'}
+        <label class="chk"><input type="checkbox" class="revBox" ${a.reviewed?'checked':''}/> reviewed</label>
+      </div>
+      ${a.relevance_to_me?`<div class="why">▸ ${esc(a.relevance_to_me)}</div>`:''}
+      ${a.detail?`<div class="detail">${esc(a.detail)}</div>`:''}
+    </div>
   </div>`;
-  h += `<div class="sect">Top movements that matter</div>`;
-  h += top.map(rowHTML).join('') || `<div class="empty">No high-relevance items.</div>`;
-  h += `<div class="sect">Who to meet next</div>`;
-  h += meet.length ? `<div class="grid">${meet.map(contactHTML).join('')}</div>` : `<div class="empty">No open reach-outs.</div>`;
-  v.innerHTML = h;
-  bindRowEvents(v); bindContactEvents(v);
 }
 
-/* ---------- activities ---------- */
-function renderTypeFilter(){
-  const types=[...new Set(DATA.activities.map(a=>a.type))].sort();
-  $('#actType').innerHTML = `<option value="">all types</option>`+types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+function renderThisWeek(){
+  const v=$('#view-thisweek');
+  const unrev=DATA.activities.filter(a=>!a.reviewed).length;
+  const top=DATA.activities.filter(a=>a.relevance_score>=4).sort((a,b)=>b.relevance_score-a.relevance_score||(a.event_date<b.event_date?1:-1)).slice(0,12);
+  const meet=DATA.contacts.filter(c=>c.status==='to-reach').sort((a,b)=>(b.priority||0)-(a.priority||0)).slice(0,5);
+  let h=`<div class="kpis">
+    <span><b>${DATA.companies.length}</b> companies</span><span><b>${DATA.activities.length}</b> movements</span>
+    <span><b>${unrev}</b> need review</span><span><b>${DATA.contacts.length}</b> contacts</span></div>`;
+  h+=`<div class="sect">Top movements that matter</div>`;
+  h+=top.map((a,i)=>itemHTML(a,i)).join('')||`<div class="empty">No high-relevance items.</div>`;
+  h+=`<div class="sect">Who to meet next</div>`;
+  h+=meet.length?`<div class="grid">${meet.map(contactHTML).join('')}</div>`:`<div class="empty">No open reach-outs.</div>`;
+  v.innerHTML=h; bindRowEvents(v); bindContactEvents(v);
 }
-function rowHTML(a){
-  const newish = !a.reviewed;
-  const co = coName(a);
-  const src = a.source_url ? `<a href="${esc(a.source_url)}" target="_blank" rel="noopener">${esc(a.source_name||'source')} ↗</a>` : '';
-  return `<div class="row ${newish?'unrev':''}" data-id="${a.id}">
-    <div class="head"><div class="hl">${esc(a.headline)}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${scoreChip(a.relevance_score||0)}${typeChip(a.type)}</div></div>
-    <div class="meta"><span>${esc(a.event_date)}</span>${co?`<span>· ${esc(co)}</span>`:''}${a.region?`<span>· ${esc(a.region)}</span>`:''}${newish?'<span class="pill new">staged</span>':''}</div>
-    ${a.relevance_to_me?`<div class="why">▸ ${esc(a.relevance_to_me)}</div>`:''}
-    ${a.detail?`<div class="detail">${esc(a.detail)}</div>`:''}
-    <div class="foot"><div>${src}</div>
-      <label class="chk"><input type="checkbox" class="revBox" ${a.reviewed?'checked':''}/> reviewed</label></div>
-  </div>`;
+
+function renderTypeFilter(){
+  const t=[...new Set(DATA.activities.map(a=>a.type))].sort();
+  $('#actType').innerHTML=`<option value="">all types</option>`+t.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
 }
 function renderActivities(){
-  const q=$('#actSearch').value.toLowerCase(), ty=$('#actType').value, rv=$('#actReviewed').value, sort=$('#actSort').value;
-  let list = DATA.activities.filter(a=>{
-    if(ty && a.type!==ty) return false;
-    if(rv==='true' && !a.reviewed) return false;
-    if(rv==='false' && a.reviewed) return false;
-    if(q){ const blob=(a.headline+' '+coName(a)+' '+(a.detail||'')).toLowerCase(); if(!blob.includes(q)) return false; }
+  const q=$('#actSearch').value.toLowerCase(),ty=$('#actType').value,rv=$('#actReviewed').value,sort=$('#actSort').value;
+  let list=DATA.activities.filter(a=>{
+    if(ty&&a.type!==ty)return false;
+    if(rv==='true'&&!a.reviewed)return false;
+    if(rv==='false'&&a.reviewed)return false;
+    if(q){const b=(a.headline+' '+coName(a)+' '+(a.detail||'')).toLowerCase(); if(!b.includes(q))return false;}
     return true;
   });
-  list.sort(sort==='date' ? (a,b)=>(a.event_date<b.event_date?1:-1)
-    : (a,b)=> (b.relevance_score-a.relevance_score)||(a.event_date<b.event_date?1:-1));
-  const el=$('#actList');
-  el.innerHTML = list.length? list.map(rowHTML).join('') : `<div class="empty">No matching activities.</div>`;
-  bindRowEvents(el);
+  list.sort(sort==='date'?(a,b)=>(a.event_date<b.event_date?1:-1):(a,b)=>(b.relevance_score-a.relevance_score)||(a.event_date<b.event_date?1:-1));
+  $('#actList').innerHTML=list.length?list.map((a,i)=>itemHTML(a,i)).join(''):`<div class="empty">No matching activities.</div>`;
+  bindRowEvents($('#actList'));
 }
 ['#actSearch','#actType','#actReviewed','#actSort'].forEach(s=>$(s).addEventListener('input',renderActivities));
 
 function bindRowEvents(scope){
-  scope.querySelectorAll('.revBox').forEach(box=>{
-    box.addEventListener('change', async e=>{
-      const id=e.target.closest('.row').dataset.id, val=e.target.checked;
-      const { error } = await sb.from('activities').update({reviewed:val}).eq('id',id);
-      if(error){ alert('Update failed: '+error.message); e.target.checked=!val; return; }
-      const a=DATA.activities.find(x=>x.id===id); if(a) a.reviewed=val;
-      e.target.closest('.row').classList.toggle('unrev',!val);
-      const badge=e.target.closest('.row').querySelector('.pill.new'); if(badge&&val) badge.remove();
-      if($('#sweepInfo')){ const u=DATA.activities.filter(x=>!x.reviewed).length;
-        const k=document.querySelector('#view-thisweek .kpi:nth-child(3) b'); if(k)k.textContent=u; }
-    });
-  });
+  scope.querySelectorAll('.revBox').forEach(box=>box.addEventListener('change',async e=>{
+    const id=e.target.closest('.item').dataset.id,val=e.target.checked;
+    const {error}=await sb.from('activities').update({reviewed:val}).eq('id',id);
+    if(error){alert('Update failed: '+error.message);e.target.checked=!val;return;}
+    const a=DATA.activities.find(x=>x.id===id); if(a)a.reviewed=val;
+    e.target.closest('.item').classList.toggle('unrev',!val);
+    const s=e.target.closest('.item').querySelector('.staged'); if(s&&val)s.remove();
+  }));
 }
 
-/* ---------- companies ---------- */
-function flag(label, on, ok){ return `<span class="pill" style="color:${on?(ok?'var(--green)':'var(--red)'):'var(--faint)'}">${label}</span>`; }
+function flag(label,on,ok){ return `<span class="tag ${on?(ok?'on':'off'):''}">${label}</span>`; }
 function companyHTML(c){
-  const links=[];
-  if(c.website) links.push(`<a href="${esc(c.website)}" target="_blank" rel="noopener">site ↗</a>`);
-  if(c.linkedin_url) links.push(`<a href="${esc(c.linkedin_url)}" target="_blank" rel="noopener">in ↗</a>`);
-  if(c.x_url) links.push(`<a href="${esc(c.x_url)}" target="_blank" rel="noopener">X ↗</a>`);
-  if(c.careers_url) links.push(`<a href="${esc(c.careers_url)}" target="_blank" rel="noopener">careers ↗</a>`);
-  return `<div class="co ${c.relevance==='core'?'core':''}">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+  const L=[];
+  if(c.website)L.push(`<a href="${esc(c.website)}" target="_blank" rel="noopener">site</a>`);
+  if(c.linkedin_url)L.push(`<a href="${esc(c.linkedin_url)}" target="_blank" rel="noopener">in</a>`);
+  if(c.x_url)L.push(`<a href="${esc(c.x_url)}" target="_blank" rel="noopener">X</a>`);
+  if(c.careers_url)L.push(`<a href="${esc(c.careers_url)}" target="_blank" rel="noopener">careers</a>`);
+  return `<div class="box ${c.relevance==='core'?'core':''}">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
       <div><h3>${esc(c.name)}</h3><div class="sub">${esc([c.hq_city,c.hq_country].filter(Boolean).join(', '))} · ${esc(c.category||'')}</div></div>
-      <span class="pill ${c.status==='ENGAGED'?'s5':'s3'}">${esc(c.status||'')}</span>
-    </div>
+      <span class="tag ${c.status==='ENGAGED'?'eng':''}">${esc(c.status||'')}</span></div>
     ${c.relevance_rationale?`<div class="ratio">${esc(c.relevance_rationale)}</div>`:''}
-    <div class="flags">
-      <span class="pill" style="color:${c.relevance==='core'?'var(--gold)':'var(--dim)'}">${esc(c.relevance)}</span>
-      ${flag('GC contract', c.gc_engaged, true)}
-      ${c.five_eyes!==null?flag(c.five_eyes?'Five Eyes':'non-FVEY', true, c.five_eyes):''}
-    </div>
-    ${c.sovereignty_note?`<div class="detail" style="color:var(--faint);font-size:12px;margin-top:9px">${esc(c.sovereignty_note)}</div>`:''}
-    <div class="links">${links.join('')||'<span class="unver">no links yet</span>'}</div>
-  </div>`;
+    <div class="tags"><span class="tag">${esc(c.relevance)}</span>${flag('GC contract',c.gc_engaged,true)}${c.five_eyes!==null?flag(c.five_eyes?'Five Eyes':'non-FVEY',true,c.five_eyes):''}</div>
+    ${c.sovereignty_note?`<div class="sov">${esc(c.sovereignty_note)}</div>`:''}
+    <div class="links">${L.join('')||'<span class="unver">no links yet</span>'}</div></div>`;
 }
-function renderCompanies(){ $('#coGrid').innerHTML = DATA.companies.map(companyHTML).join(''); }
+function renderCompanies(){ $('#coGrid').innerHTML=DATA.companies.map(companyHTML).join(''); }
 
-/* ---------- contacts ---------- */
 const STATUSES=['to-reach','contacted','connected','passed'];
 function contactHTML(c){
-  const links=[];
-  if(c.linkedin_url) links.push(`<a href="${esc(c.linkedin_url)}" target="_blank" rel="noopener">LinkedIn ↗</a>`);
-  if(c.x_url) links.push(`<a href="${esc(c.x_url)}" target="_blank" rel="noopener">X ↗</a>`);
-  return `<div class="co ct" data-id="${c.id}">
-    <div class="top"><span class="nm">${esc(c.full_name)}</span>${c.priority?`<span class="pill s${c.priority}">P${c.priority}</span>`:''}</div>
+  const L=[];
+  if(c.linkedin_url)L.push(`<a href="${esc(c.linkedin_url)}" target="_blank" rel="noopener">LinkedIn</a>`);
+  if(c.x_url)L.push(`<a href="${esc(c.x_url)}" target="_blank" rel="noopener">X</a>`);
+  return `<div class="box ct" data-id="${c.id}">
+    <div class="top"><span class="nm">${esc(c.full_name)}</span>${c.priority?`<span class="prio p${c.priority}">P${c.priority}</span>`:''}</div>
     <div class="ti">${esc(c.title||'')} · ${esc(c.company_name||'')}${c.verified===false?' · <span class="unver">UNVERIFIED</span>':''}</div>
     ${c.reach_out_angle?`<div class="ang">▸ ${esc(c.reach_out_angle)}</div>`:''}
-    <div class="links">${links.join('')||'<span class="unver">no handle</span>'}</div>
-    <div style="margin-top:10px"><select class="stSel">${STATUSES.map(s=>`<option value="${s}" ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
-  </div>`;
+    <div class="links">${L.join('')||'<span class="unver">no handle</span>'}</div>
+    <div style="margin-top:9px"><select class="stSel">${STATUSES.map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div></div>`;
 }
 function renderContacts(){
-  const v=$('#view-contacts');
-  const byCo={}; DATA.contacts.forEach(c=>{ (byCo[c.company_name||'—']=byCo[c.company_name||'—']||[]).push(c); });
-  let h='';
-  Object.keys(byCo).sort().forEach(co=>{
-    h+=`<div class="sect">${esc(co)}</div><div class="grid">${byCo[co].map(contactHTML).join('')}</div>`;
-  });
-  v.innerHTML = h || `<div class="empty">No contacts yet.</div>`;
-  bindContactEvents(v);
+  const v=$('#view-contacts'),byCo={};
+  DATA.contacts.forEach(c=>{(byCo[c.company_name||'—']=byCo[c.company_name||'—']||[]).push(c);});
+  let h=''; Object.keys(byCo).sort().forEach(co=>{ h+=`<div class="sect">${esc(co)}</div><div class="grid">${byCo[co].map(contactHTML).join('')}</div>`; });
+  v.innerHTML=h||`<div class="empty">No contacts yet.</div>`; bindContactEvents(v);
 }
 function bindContactEvents(scope){
-  scope.querySelectorAll('.stSel').forEach(sel=>{
-    sel.addEventListener('change', async e=>{
-      const id=e.target.closest('.ct').dataset.id, val=e.target.value;
-      const { error } = await sb.from('contacts').update({status:val}).eq('id',id);
-      if(error){ alert('Update failed: '+error.message); return; }
-      const c=DATA.contacts.find(x=>x.id===id); if(c) c.status=val;
-    });
-  });
+  scope.querySelectorAll('.stSel').forEach(sel=>sel.addEventListener('change',async e=>{
+    const id=e.target.closest('.ct').dataset.id,val=e.target.value;
+    const {error}=await sb.from('contacts').update({status:val}).eq('id',id);
+    if(error){alert('Update failed: '+error.message);return;}
+    const c=DATA.contacts.find(x=>x.id===id); if(c)c.status=val;
+  }));
 }
 
-/* ---------- tabs ---------- */
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.bar .nav a').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.bar .nav a').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   t.classList.add('active'); $('#view-'+t.dataset.tab).classList.add('active');
 }));
-
 init();
 </script>
 </body>
